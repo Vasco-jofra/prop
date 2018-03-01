@@ -1,4 +1,4 @@
-from goctf.utils.color import *
+from color import *
 
 def print_head(msg):
     print GREEN + msg + ":" + NO_COLOR

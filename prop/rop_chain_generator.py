@@ -1,4 +1,4 @@
-from goctf.ropper.loaders.architecture import *
+from loaders.architecture import *
 import re
 
 # self.register_control = { \

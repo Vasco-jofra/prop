@@ -6,7 +6,7 @@
 ##  http://shell-storm.org/project/ROPgadget/
 ##
 
-from goctf.ropper.loaders.architecture import *
+from architecture import *
 from ctypes import *
 from struct import unpack
 

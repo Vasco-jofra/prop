@@ -6,9 +6,9 @@
 ##  http://shell-storm.org/project/ROPgadget/
 ##
 
-from prop.utils.logger       import *
-from prop.ropper.loaders.elf import *
-from prop.ropper.loaders.pe  import *
+from utils.logger       import *
+from loaders.elf import *
+from loaders.pe  import *
 from binascii import unhexlify
 
 class Binary(object):

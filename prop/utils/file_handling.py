@@ -1,4 +1,4 @@
-from goctf.utils.logger import *
+from logger import *
 import os
 import shutil
 

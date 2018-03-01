@@ -1,9 +1,9 @@
 #!/usr/bin/python2
-from goctf.utils.logger  import *
-from goctf.utils.color   import YELLOW, NO_COLOR
-from goctf.ropper.binary import *
-from goctf.ropper.rop_chain_generator import *
-from goctf.ropper.loaders.architecture import *
+from utils.logger import *
+from utils.color import YELLOW, NO_COLOR
+from binary import *
+from rop_chain_generator import *
+from loaders.architecture import *
 
 import os
 import sys

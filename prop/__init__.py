@@ -1,3 +1,2 @@
-import goctf.ropper.ropper
-import goctf.ropper.rop_chain_generator
-import goctf.ropper.binary
+import binary
+import rop_chain_generator
