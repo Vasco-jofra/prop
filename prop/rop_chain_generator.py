@@ -40,10 +40,10 @@ registers = [ \
 ]
 
 class RopChainGenerator(object):
-    def __init__(self, gadgets, mode):
-        self.gadgets   = gadgets
-        self.mode      = mode
-        self.pack_func = "p32" if mode == MODE_32 else "p64"
+    def __init__(self, prop):
+        self.gadgets   = prop.gadgets
+        self.mode      = prop.binary.getArchMode()
+        self.pack_func = "p32" if self.mode == MODE_32 else "p64"
 
         # @SEE: We will need some analysis metadata here, like registers controlled (set by the primitive analysis)
         self.register_control = set()
