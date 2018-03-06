@@ -138,6 +138,7 @@ def main():
     parser.add_argument('-c', '--code', action="store_true", help='output interesting gadgets found as python functions')
     parser.add_argument('-t', '--text_gadgets', action="store_true", help='output gadgets in text format (default)')
     parser.add_argument('-p', '--python_gadgets', action="store_true", help='output gadgets as a python dictionary')
+    parser.add_argument('-s', '--silent', action="store_true", help='no gadgets output, just some info')
 
     args = parser.parse_args()
 
@@ -150,7 +151,7 @@ def main():
     elif args.python_gadgets:
         for i in prop.get_gadgets_as_python():
             print i
-    else:
+    elif not args.silent:
         for i in prop.get_gadgets_as_text():
             print i
 
