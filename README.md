@@ -2,9 +2,10 @@
 A simple rop gadget collector.
 
 # Install
-pip install -e . --user
+`pip install -e . --user`
 
 # Usage
+```
 usage: prop [-h] [-t] [-p] [-s] [-c] binary_path
 
 positional arguments:
@@ -17,10 +18,13 @@ optional arguments:
   -s, --silent          no gadgets output, just some info
   -c, --code            output interesting gadgets found as python functions
                         (in development)
+```
 
 # Examples
+```
 prop -h
 prop /bin/ls
 prop --python /bin/ls
 prop --silent /bin/ls
 prop --code /bin/ls
+```
