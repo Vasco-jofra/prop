@@ -21,10 +21,8 @@ optional arguments:
 ```
 
 # Examples
-```
-prop -h
-prop /bin/ls
-prop --python_gadgets /bin/ls
-prop --silent /bin/ls
-prop --code /bin/ls
-```
+ * `prop -h`
+ * `prop /bin/ls`
+ * `prop --python_gadgets /bin/ls`
+ * `prop --silent /bin/ls`
+ * `prop --code /bin/ls`
