@@ -24,7 +24,7 @@ optional arguments:
 ```
 prop -h
 prop /bin/ls
-prop --python /bin/ls
+prop --python_gadgets /bin/ls
 prop --silent /bin/ls
 prop --code /bin/ls
 ```
