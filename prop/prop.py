@@ -135,10 +135,10 @@ def exit_with_msg(msg):
 def main():
     parser = argparse.ArgumentParser(description = 'Props to the boys.')
     parser.add_argument('binary_path', help='The binary path of the file to be analyzed')
-    parser.add_argument('-c', '--code', action="store_true", help='output interesting gadgets found as python functions')
     parser.add_argument('-t', '--text_gadgets', action="store_true", help='output gadgets in text format (default)')
     parser.add_argument('-p', '--python_gadgets', action="store_true", help='output gadgets as a python dictionary')
     parser.add_argument('-s', '--silent', action="store_true", help='no gadgets output, just some info')
+    parser.add_argument('-c', '--code', action="store_true", help='output interesting gadgets found as python functions (in development)')
 
     args = parser.parse_args()
 
