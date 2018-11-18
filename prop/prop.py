@@ -12,15 +12,14 @@ import time
 import distorm3
 
 class Prop(object):
-    def __init__(self, binpath, auto_extract = True):
+    def __init__(self, binpath, depth=10):
         self.ends      = ["ret", "retf", "int", "sysenter", "syscall", "call e", "call r"] # "jmp", "call"]
         self.blacklist = ["db", "int 3"]
 
         self.binary = Binary(binpath)
         self.gadgets = {}
 
-        if auto_extract:
-            self.extract_gadgets()
+        self.extract_gadgets(depth=depth)
 
     def _extract_gadget(self, pc, data, mode):
         """ Returns the gadget found with the given data """
@@ -52,7 +51,7 @@ class Prop(object):
         return None, None
 
 
-    def extract_gadgets(self, depth = 10):
+    def extract_gadgets(self, depth):
         """ Extracts all the gadgets that exist in the file given, and returns them in a set """
 
         log_info("Extracting gadgets for the binary '%s'" % self.binary.getFileName())
@@ -135,6 +134,7 @@ def exit_with_msg(msg):
 def main():
     parser = argparse.ArgumentParser(description = 'Props to the boys.')
     parser.add_argument('binary_path', help='The binary path of the file to be analyzed')
+    parser.add_argument('-d', '--depth', help='Gadget search depth', type=int, default = 10)
     parser.add_argument('-t', '--text_gadgets', action="store_true", help='output gadgets in text format (default)')
     parser.add_argument('-p', '--python_gadgets', action="store_true", help='output gadgets as a python dictionary')
     parser.add_argument('-s', '--silent', action="store_true", help='no gadgets output, just some info')
@@ -142,8 +142,7 @@ def main():
 
     args = parser.parse_args()
 
-    binpath = args.binary_path
-    prop    = Prop(binpath)
+    prop    = Prop(args.binary_path, depth=args.depth)
     rop_gen = RopChainGenerator(prop)
 
     if args.code == True:
