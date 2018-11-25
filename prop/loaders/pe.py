@@ -9,6 +9,7 @@
 from ctypes     import *
 from struct     import unpack
 from binascii   import unhexlify
+from architecture import *
 
 class PEFlags(object):
         IMAGE_MACHINE_INTEL_386       = 0x014c
