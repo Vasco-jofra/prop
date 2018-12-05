@@ -61,7 +61,7 @@ class RopChainGenerator(object):
 
         res = ""
         for i in self.primitive_analysis:
-            res += "-----------------\n" + i.gen_python()
+            res += "####################\n" + i.gen_python()
         return res
 
     def controls(self, reg):
