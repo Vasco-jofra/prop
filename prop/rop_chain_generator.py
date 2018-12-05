@@ -61,7 +61,7 @@ class RopChainGenerator(object):
 
         res = ""
         for i in self.primitive_analysis:
-            res += "-----------------\n" + i.gen_python()
+            res += "####################\n" + i.gen_python()
         return res
 
     def controls(self, reg):
@@ -107,7 +107,9 @@ class RegisterControlAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(RegisterControlAnalyzer, self).__init__(rop_chain_gen)
 
-    def __is_clean_pop(self, gadget, res = []):
+    def __is_clean_pop(self, gadget, res = None):
+        if res is None:
+            res = []
         if "pop " not in gadget[0]:
             return False, None
 
@@ -115,6 +117,9 @@ class RegisterControlAnalyzer(BaseAnalysis):
         res.append(operand)
         if gadget[1] == 'ret':
             return True, res
+        # ignore sucessive pops to the same register unless we had another pop before
+        elif operand in gadget[1] and len(res) == 1:
+            return False, None
         elif "pop " in gadget[1]:
             return self.__is_clean_pop(gadget[1:], res)
         else:
@@ -161,8 +166,14 @@ class RegisterControlAnalyzer(BaseAnalysis):
             content += "\t"
             content += "])"
 
+            # remove duplicate registers from python code arguments
+            non_duped_regs = []
+            for r in regs:
+                if r not in non_duped_regs:
+                    non_duped_regs.append(r)
+
             name = "set_%s" % ("_".join(regs))
-            res += self.gen_func(name, content, regs)
+            res += self.gen_func(name, content, non_duped_regs)
             res += "\n"
         return res
 
