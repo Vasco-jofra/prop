@@ -107,7 +107,9 @@ class RegisterControlAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(RegisterControlAnalyzer, self).__init__(rop_chain_gen)
 
-    def __is_clean_pop(self, gadget, res = []):
+    def __is_clean_pop(self, gadget, res = None):
+        if res is None:
+            res = []
         if "pop " not in gadget[0]:
             return False, None
 
@@ -115,6 +117,9 @@ class RegisterControlAnalyzer(BaseAnalysis):
         res.append(operand)
         if gadget[1] == 'ret':
             return True, res
+        # ignore sucessive pops to the same register unless we had another pop before
+        elif operand in gadget[1] and len(res) == 1:
+            return False, None
         elif "pop " in gadget[1]:
             return self.__is_clean_pop(gadget[1:], res)
         else:
