@@ -161,8 +161,14 @@ class RegisterControlAnalyzer(BaseAnalysis):
             content += "\t"
             content += "])"
 
+            # remove duplicate registers from python code arguments
+            non_duped_regs = []
+            for r in regs:
+                if r not in non_duped_regs:
+                    non_duped_regs.append(r)
+
             name = "set_%s" % ("_".join(regs))
-            res += self.gen_func(name, content, regs)
+            res += self.gen_func(name, content, non_duped_regs)
             res += "\n"
         return res
 
