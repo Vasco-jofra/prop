@@ -13,7 +13,7 @@ import distorm3
 
 class Prop(object):
     def __init__(self, binpath, depth=10):
-        self.ends      = ["ret", "retf", "int", "sysenter", "syscall", "call e", "call r"] # "jmp", "call"]
+        self.ends      = ["ret", "retf", "int ", "sysenter", "syscall", "call e", "call r"] # "jmp", "call"]
         self.blacklist = ["db", "int 3"]
 
         self.binary = Binary(binpath)
@@ -88,7 +88,7 @@ class Prop(object):
                 # If we got a valid gadget
                 if addrs != None:
                     for i, a in enumerate(addrs):
-                        # I think this is needed beacause even if we start at different addrs we may end up falling
+                        # I think this is needed because even if we start at different addrs we may end up falling
                         # in the same address due to opcode sizes
                         if a in tested_addrs:
                             break
