@@ -1,4 +1,4 @@
-# rop-chainer
+# prop
 A simple rop gadget collector.
 
 # Install
