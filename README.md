@@ -17,7 +17,6 @@ optional arguments:
   -p, --python_gadgets  output gadgets as a python dictionary
   -s, --silent          no gadgets output, just some info
   -c, --code            output interesting gadgets found as python functions
-                        (in development)
 ```
 
 # Examples
