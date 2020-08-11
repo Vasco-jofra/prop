@@ -202,6 +202,11 @@ class RegisterControlAnalyzer(BaseAnalysis):
             if success:
                 self.good_gadgets[gadget] = addrs
                 for i in operands:
+                    # Sometimes we have 'pop ss' for which we have no info in our register dictionary
+                    if i not in registers:
+                        self.rop_chain_gen.register_control.add(i)
+                        continue
+
                     # Add control to the register and all sub registers
                     reg_fam = registers[i]
                     regs_to_add = reg_fam[reg_fam.index(i):]
