@@ -6,9 +6,9 @@
 ##  http://shell-storm.org/project/ROPgadget/
 ##
 
-from utils.logger import *
-from loaders.elf import *
-from loaders.pe import *
+from .utils.logger import *
+from .loaders.elf import *
+from .loaders.pe import *
 from binascii import unhexlify
 
 
@@ -22,7 +22,7 @@ class Binary(object):
             fd = open(self.__filename, "rb")
             self.__rawBinary = fd.read()
             fd.close()
-        except:
+        except Exception:
             log_error("Unable to open the binary '%s'" % filename)
             return None
 

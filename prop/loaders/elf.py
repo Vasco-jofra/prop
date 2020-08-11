@@ -6,9 +6,8 @@
 ##  http://shell-storm.org/project/ROPgadget/
 ##
 
-from architecture import *
+from .architecture import *
 from ctypes import *
-from struct import unpack
 
 
 class ELFFlags(object):
@@ -215,10 +214,9 @@ class Elf64_Shdr_MSB(BigEndianStructure):
     ]
 
 
-""" This class parses the ELF """
-
-
 class ELF(object):
+    """ This class parses the ELF """
+
     def __init__(self, binary):
         self.__binary = bytearray(binary)
         self.__ElfHeader = None
@@ -229,9 +227,8 @@ class ELF(object):
         self.__setShdr()
         self.__setPhdr()
 
-    """ Parse ELF header """
-
     def __setHeaderElf(self):
+        """ Parse ELF header """
         e_ident = self.__binary[:15]
 
         ei_class = e_ident[ELFFlags.EI_CLASS]
@@ -254,12 +251,10 @@ class ELF(object):
 
         self.getArch()  # Check if architecture is supported
 
-    """ Parse Section header """
-
     def __setShdr(self):
+        """ Parse Section header """
         shdr_num = self.__ElfHeader.e_shnum
         base = self.__binary[self.__ElfHeader.e_shoff:]
-        shdr_l = []
 
         e_ident = self.__binary[:15]
         ei_data = e_ident[ELFFlags.EI_DATA]
@@ -282,17 +277,16 @@ class ELF(object):
             for i in range(shdr_num):
                 self.__shdr_l[i].str_name = string_table[self.__shdr_l[i].sh_name:].split('\0')[0]
 
-    """ Parse Program header """
-
     def __setPhdr(self):
+        """ Parse Program header """
+
         pdhr_num = self.__ElfHeader.e_phnum
         base = self.__binary[self.__ElfHeader.e_phoff:]
-        phdr_l = []
 
         e_ident = self.__binary[:15]
         ei_data = e_ident[ELFFlags.EI_DATA]
 
-        for i in range(pdhr_num):
+        for _ in range(pdhr_num):
             if self.getArchMode() == MODE_32:
                 if ei_data == ELFFlags.ELFDATA2LSB: phdr = Elf32_Phdr_LSB.from_buffer_copy(base)
                 elif ei_data == ELFFlags.ELFDATA2MSB: phdr = Elf32_Phdr_MSB.from_buffer_copy(base)
@@ -304,7 +298,8 @@ class ELF(object):
             base = base[self.__ElfHeader.e_phentsize:]
 
     def getEntryPoint(self):
-        return self.__e_entry
+        return 0
+        # return self.__e_entry
 
     def getExecSections(self):
         ret = []

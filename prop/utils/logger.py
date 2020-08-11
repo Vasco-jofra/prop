@@ -1,4 +1,4 @@
-from color import *
+from .color import *
 
 
 def print_head(msg):

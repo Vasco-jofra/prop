@@ -9,7 +9,7 @@
 from ctypes import *
 from struct import unpack
 from binascii import unhexlify
-from architecture import *
+from .architecture import *
 
 
 class PEFlags(object):
@@ -135,10 +135,9 @@ class IMAGE_SECTION_HEADER(Structure):
     ]
 
 
-""" This class parses the PE format """
-
-
 class PE(object):
+    """ This class parses the PE format """
+
     def __init__(self, binary):
         self.__binary = bytearray(binary)
 
@@ -181,7 +180,7 @@ class PE(object):
         sizeSections = self.__IMAGE_FILE_HEADER.NumberOfSections * sizeof(IMAGE_SECTION_HEADER)
         base = self.__binary[baseSections:baseSections + sizeSections]
 
-        for i in range(self.__IMAGE_FILE_HEADER.NumberOfSections):
+        for _ in range(self.__IMAGE_FILE_HEADER.NumberOfSections):
             sec = IMAGE_SECTION_HEADER.from_buffer_copy(base)
             base = base[sizeof(IMAGE_SECTION_HEADER):]
             self.__sections_l += [sec]

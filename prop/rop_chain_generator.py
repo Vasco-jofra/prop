@@ -1,4 +1,4 @@
-from loaders.architecture import *
+from .loaders.architecture import *
 import re
 
 # self.register_control = { \
@@ -88,7 +88,12 @@ class BaseAnalysis(object):
         self.all_gadgets = rop_chain_gen.gadgets
         self.good_gadgets = None
 
-    def gen_func(self, name, content, args=[], defaults=[]):
+    def gen_func(self, name, content, args=None, defaults=None):
+        if args is None:
+            args = []
+        if defaults is None:
+            defaults = []
+
         code = ""
         code += "def %s(" % name
         for i, arg in enumerate(args):
@@ -110,7 +115,8 @@ class RegisterControlAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(RegisterControlAnalyzer, self).__init__(rop_chain_gen)
 
-    def __is_clean_pop(self, gadget):
+    @staticmethod
+    def __is_clean_pop(gadget):
         ERROR = (False, None)
         res = []
 
@@ -227,7 +233,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
         super(WriteWhatWhereAnalyzer, self).__init__(rop_chain_gen)
 
         self.max_depth = 4
-        self.write_what_where_regex = re.compile("^mov.*? \[(.*)\], (.*)$")
+        self.write_what_where_regex = re.compile(r"^mov.*? \[(.*)\], (.*)$")
         self.operands = None
 
     def __is_write_what_where(self, gadget):

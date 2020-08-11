@@ -1,13 +1,11 @@
 #!/usr/bin/python2
-from utils.logger import *
-from utils.color import YELLOW, NO_COLOR
-from binary import *
-from rop_chain_generator import *
-from loaders.architecture import *
+from .utils.logger import *
+from .utils.color import YELLOW, NO_COLOR
+from .binary import *
+from .rop_chain_generator import *
+from .loaders.architecture import *
 
-import os
 import argparse
-import sys
 import time
 import distorm3
 
@@ -30,9 +28,9 @@ class Prop(object):
         addr_list = []
         for d in disasm:
             addr = d[0]
-            size = d[1]
+            _size = d[1]
             inst = d[2].lower()
-            opcodes = d[3]
+            _opcodes = d[3]
 
             ### if inst in blacklist:
             # @Performance: Needed because the above does not work as intended
@@ -66,7 +64,7 @@ class Prop(object):
             opcodes = section['opcodes']
             vaddr = section['vaddr']
             size = section['size']
-            offset = section['offset']
+            _offset = section['offset']
 
             log_info("Extracting gadgets from the executable section 0x%x-0x%x" % (vaddr, vaddr + size))
 
@@ -87,14 +85,14 @@ class Prop(object):
 
                 # If we got a valid gadget
                 if addrs != None:
-                    for i, a in enumerate(addrs):
+                    for j, a in enumerate(addrs):
                         # I think this is needed because even if we start at different addrs we may end up falling
                         # in the same address due to opcode sizes
                         if a in tested_addrs:
                             break
 
                         tested_addrs.add(a)
-                        val = tuple(instrs[i:])
+                        val = tuple(instrs[j:])
                         if val in self.gadgets:
                             self.gadgets[val].append(a)
                         else:
@@ -121,7 +119,7 @@ class Prop(object):
     def get_gadgets_as_text(self):
         ordered_gadgets = self.order_by_instr()
         for instrs in ordered_gadgets:
-            yield "%s  ---> %s" % ("; ".join(instrs), map(lambda x: x if 'L' != x[-1] else x[:-1], map(hex, self.gadgets[instrs])))
+            yield "%s  ---> %s" % ("; ".join(instrs), [hex(x).strip('L') for x in self.gadgets[instrs]])
 
 
 def exit_with_msg(msg):
