@@ -110,23 +110,28 @@ class RegisterControlAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(RegisterControlAnalyzer, self).__init__(rop_chain_gen)
 
-    def __is_clean_pop(self, gadget, res=None):
-        if res is None:
-            res = []
-        if "pop " not in gadget[0]:
-            return False, None
+    def __is_clean_pop(self, gadget):
+        ERROR = (False, None)
+        res = []
 
-        operand = gadget[0].replace("pop ", "")
-        res.append(operand)
-        if gadget[1] == 'ret':
-            return True, res
-        # ignore sucessive pops to the same register unless we had another pop before
-        elif operand in gadget[1] and len(res) == 1:
-            return False, None
-        elif "pop " in gadget[1]:
-            return self.__is_clean_pop(gadget[1:], res)
-        else:
-            return False, None
+        if len(gadget) <= 1:
+            return ERROR
+
+        if gadget[-1] != 'ret':
+            return ERROR
+
+        for instr in gadget[:-1]:
+            if "pop " not in instr:
+                return ERROR
+
+            operand = instr.split(" ", 1)[1]
+            res.append(operand)
+
+        # ignore successive pops to the same register unless we had another pop in between
+        if len(res) >= 2 and res[0] == res[1]:
+            return ERROR
+
+        return True, res
 
     def analyze(self):
         """ Looks for control of registers """
