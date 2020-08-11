@@ -116,10 +116,10 @@ class Prop(object):
             yield "\t%s: %s," % (instrs, self.gadgets[instrs])
         yield "}"
 
-    def get_gadgets_as_text(self):
+    def get_gadgets_as_text(self, max_addrs_per_gadget):
         ordered_gadgets = self.order_by_instr()
         for instrs in ordered_gadgets:
-            yield "%s  ---> %s" % ("; ".join(instrs), [hex(x).strip('L') for x in self.gadgets[instrs]])
+            yield "%s  ---> %s" % ("; ".join(instrs), [hex(x).strip('L') for x in self.gadgets[instrs][:max_addrs_per_gadget]])
 
 
 def exit_with_msg(msg):
@@ -132,13 +132,15 @@ def exit_with_msg(msg):
 # =============
 def main():
     DEPTH_DEFAULT = 10
+    MAX_ADDRS_PER_GADGET = 3
 
     parser = argparse.ArgumentParser(description='Props to the boys.')
     parser.add_argument('binary_path', help='The binary path of the file to be analyzed')
-    parser.add_argument('-d', '--depth', help='Gadget search depth (default=%d)' % (DEPTH_DEFAULT), type=int, default=DEPTH_DEFAULT)
+    parser.add_argument('-d', '--depth', type=int, default=DEPTH_DEFAULT, help='Gadget search depth (default=%d)' % (DEPTH_DEFAULT))
     parser.add_argument('-t', '--text_gadgets', action="store_true", help='output gadgets in text format (default)')
     parser.add_argument('-c', '--code', action="store_true", help='output interesting gadgets found as python functions')
     parser.add_argument('-p', '--python_gadgets', action="store_true", help='output gadgets as a python dictionary')
+    parser.add_argument('-m', '--max_addrs_per_gadget', type=int, default=MAX_ADDRS_PER_GADGET, help='the maximum number of addresses that are printed per gadget (default=%d)' % (MAX_ADDRS_PER_GADGET))
     parser.add_argument('-s', '--silent', action="store_true", help='no gadgets output, just some info')
 
     args = parser.parse_args()
@@ -147,12 +149,12 @@ def main():
     rop_gen = RopChainGenerator(prop)
 
     if args.code == True:
-        print rop_gen.gen_python()
+        print rop_gen.gen_python(args.max_addrs_per_gadget)
     elif args.python_gadgets:
         for i in prop.get_gadgets_as_python():
             print i
     elif not args.silent:
-        for i in prop.get_gadgets_as_text():
+        for i in prop.get_gadgets_as_text(args.max_addrs_per_gadget):
             print i
 
 

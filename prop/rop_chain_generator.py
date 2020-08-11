@@ -108,13 +108,13 @@ class RopChainGenerator(object):
         for i in self.primitive_analysis:
             i.analyze()
 
-    def gen_python(self):
+    def gen_python(self, max_addrs_per_gadget):
         # We must analyze first because reasons
         self.analyze()
 
         res = ""
         for i in self.primitive_analysis:
-            res += "####################\n" + i.gen_python()
+            res += "####################\n" + i.gen_python(max_addrs_per_gadget)
         return res
 
     def controls(self, reg):
@@ -159,8 +159,8 @@ class BaseAnalysis(object):
         code += "\n"
         return code
 
-    def gadget_comment(self, gadget, addrs):
-        return " # " + str(gadget) + " --> " + str([hex(x).strip('L') for x in addrs])
+    def gadget_comment(self, gadget, addrs, max_addrs_per_gadget):
+        return " # " + str(gadget) + " --> " + str([hex(x).strip('L') for x in addrs[:max_addrs_per_gadget]])
 
 
 class RegisterControlAnalyzer(BaseAnalysis):
@@ -210,7 +210,7 @@ class RegisterControlAnalyzer(BaseAnalysis):
 
         return self.good_gadgets
 
-    def gen_python(self):
+    def gen_python(self, max_addrs_per_gadget):
         """ Generates the python functions that are used to control the registers """
         self.analyze()
 
@@ -223,7 +223,7 @@ class RegisterControlAnalyzer(BaseAnalysis):
             # Address of the gadget
             content += "\t\t"
             content += self.pack_func + "(" + hex(addrs[0]).replace("L", "") + "),"
-            content += self.gadget_comment(gadget, addrs) + "\n"
+            content += self.gadget_comment(gadget, addrs, max_addrs_per_gadget) + "\n"
 
             # The values to pop
             regs = [p.replace("pop ", "") for p in gadget[:-1]]
@@ -264,7 +264,7 @@ class SyscallAnalyzer(BaseAnalysis):
                 self.good_gadgets[k] = v
         return self.good_gadgets
 
-    def gen_python(self):
+    def gen_python(self, max_addrs_per_gadget):
         self.analyze()
 
         res = ""
@@ -276,7 +276,7 @@ class SyscallAnalyzer(BaseAnalysis):
             else:
                 content += "\t"
             content += "return " + self.pack_func + "(" + hex(addrs[0]).replace("L", "") + ")"
-            content += self.gadget_comment(gadget, addrs) + "\n"
+            content += self.gadget_comment(gadget, addrs, max_addrs_per_gadget) + "\n"
             first = False
 
         if content != "":
@@ -331,7 +331,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
                 self.operands[gadget] = oper
         return self.good_gadgets
 
-    def gen_python(self):
+    def gen_python(self, max_addrs_per_gadget):
         self.analyze()
 
         res = ""
@@ -353,7 +353,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
                 first = False
 
             content += "return " + self.pack_func + "(" + hex(addrs[0]).replace("L", "") + "), "
-            content += self.gadget_comment(gadget, addrs) + "\n"
+            content += self.gadget_comment(gadget, addrs, max_addrs_per_gadget) + "\n"
 
         content += "\t])"
 
