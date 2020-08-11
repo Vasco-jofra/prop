@@ -103,7 +103,7 @@ class BaseAnalysis(object):
         return code
 
     def gadget_comment(self, gadget, addrs):
-        return " # " + str(gadget) + " --> " + str(map(lambda x: x if 'L' != x[-1] else x[:-1], map(hex, addrs)))
+        return " # " + str(gadget) + " --> " + str([hex(x).strip('L') for x in addrs])
 
 
 class RegisterControlAnalyzer(BaseAnalysis):
