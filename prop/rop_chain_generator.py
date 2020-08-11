@@ -20,24 +20,76 @@ import re
 #     "r15": False, "r15d": False, "r15w": False, "r15b": False,
 # }
 
-registers = [ \
-    "rax",  "eax",   "ax",   "al",
-    "rbx",  "edx",   "dx",   "dl",
-    "rcx",  "ecx",   "cx",   "cl",
-    "rdx",  "ebx",   "bx",   "bl",
-    "rsi",  "esi",   "si",  "sil",
-    "rdi",  "edi",   "di",  "dil",
-    "rsp",  "esp",   "sp",  "spl",
-    "rbp",  "ebp",   "bp",  "bpl",
-    "r8" ,  "r8d",  "r8w",  "r8b",
-    "r9" ,  "r9d",  "r9w",  "r9b",
-    "r10", "r10d", "r10w", "r10b",
-    "r11", "r11d", "r11w", "r11b",
-    "r12", "r12d", "r12w", "r12b",
-    "r13", "r13d", "r13w", "r13b",
-    "r14", "r14d", "r14w", "r14b",
-    "r15", "r15d", "r15w", "r15b",
-            ]
+registers = {
+    'rax': ('rax', 'eax', 'ax', 'al', 'ah'),
+    'eax': ('rax', 'eax', 'ax', 'al', 'ah'),
+    'ax': ('rax', 'eax', 'ax', 'al', 'ah'),
+    'al': ('rax', 'eax', 'ax', 'al', 'ah'),
+    'ah': ('rax', 'eax', 'ax', 'al', 'ah'),
+    'rbx': ('rbx', 'ebx', 'bx', 'bl', 'bh'),
+    'ebx': ('rbx', 'ebx', 'bx', 'bl', 'bh'),
+    'bx': ('rbx', 'ebx', 'bx', 'bl', 'bh'),
+    'bl': ('rbx', 'ebx', 'bx', 'bl', 'bh'),
+    'bh': ('rbx', 'ebx', 'bx', 'bl', 'bh'),
+    'rcx': ('rcx', 'ecx', 'cx', 'cl', 'ch'),
+    'ecx': ('rcx', 'ecx', 'cx', 'cl', 'ch'),
+    'cx': ('rcx', 'ecx', 'cx', 'cl', 'ch'),
+    'cl': ('rcx', 'ecx', 'cx', 'cl', 'ch'),
+    'ch': ('rcx', 'ecx', 'cx', 'cl', 'ch'),
+    'rdx': ('rdx', 'edx', 'dx', 'dl', 'dh'),
+    'edx': ('rdx', 'edx', 'dx', 'dl', 'dh'),
+    'dx': ('rdx', 'edx', 'dx', 'dl', 'dh'),
+    'dl': ('rdx', 'edx', 'dx', 'dl', 'dh'),
+    'dh': ('rdx', 'edx', 'dx', 'dl', 'dh'),
+    'rsi': ('rsi', 'esi', 'si', 'sil'),
+    'esi': ('rsi', 'esi', 'si', 'sil'),
+    'si': ('rsi', 'esi', 'si', 'sil'),
+    'sil': ('rsi', 'esi', 'si', 'sil'),
+    'rdi': ('rdi', 'edi', 'di', 'dil'),
+    'edi': ('rdi', 'edi', 'di', 'dil'),
+    'di': ('rdi', 'edi', 'di', 'dil'),
+    'dil': ('rdi', 'edi', 'di', 'dil'),
+    'rsp': ('rsp', 'esp', 'sp', 'spl'),
+    'esp': ('rsp', 'esp', 'sp', 'spl'),
+    'sp': ('rsp', 'esp', 'sp', 'spl'),
+    'spl': ('rsp', 'esp', 'sp', 'spl'),
+    'rbp': ('rbp', 'ebp', 'bp', 'bpl'),
+    'ebp': ('rbp', 'ebp', 'bp', 'bpl'),
+    'bp': ('rbp', 'ebp', 'bp', 'bpl'),
+    'bpl': ('rbp', 'ebp', 'bp', 'bpl'),
+    'r8': ('r8', 'r8d', 'r8w', 'r8b'),
+    'r8d': ('r8', 'r8d', 'r8w', 'r8b'),
+    'r8w': ('r8', 'r8d', 'r8w', 'r8b'),
+    'r8b': ('r8', 'r8d', 'r8w', 'r8b'),
+    'r9': ('r9', 'r9d', 'r9w', 'r9b'),
+    'r9d': ('r9', 'r9d', 'r9w', 'r9b'),
+    'r9w': ('r9', 'r9d', 'r9w', 'r9b'),
+    'r9b': ('r9', 'r9d', 'r9w', 'r9b'),
+    'r10': ('r10', 'r10d', 'r10w', 'r10b'),
+    'r10d': ('r10', 'r10d', 'r10w', 'r10b'),
+    'r10w': ('r10', 'r10d', 'r10w', 'r10b'),
+    'r10b': ('r10', 'r10d', 'r10w', 'r10b'),
+    'r11': ('r11', 'r11d', 'r11w', 'r11b'),
+    'r11d': ('r11', 'r11d', 'r11w', 'r11b'),
+    'r11w': ('r11', 'r11d', 'r11w', 'r11b'),
+    'r11b': ('r11', 'r11d', 'r11w', 'r11b'),
+    'r12': ('r12', 'r12d', 'r12w', 'r12b'),
+    'r12d': ('r12', 'r12d', 'r12w', 'r12b'),
+    'r12w': ('r12', 'r12d', 'r12w', 'r12b'),
+    'r12b': ('r12', 'r12d', 'r12w', 'r12b'),
+    'r13': ('r13', 'r13d', 'r13w', 'r13b'),
+    'r13d': ('r13', 'r13d', 'r13w', 'r13b'),
+    'r13w': ('r13', 'r13d', 'r13w', 'r13b'),
+    'r13b': ('r13', 'r13d', 'r13w', 'r13b'),
+    'r14': ('r14', 'r14d', 'r14w', 'r14b'),
+    'r14d': ('r14', 'r14d', 'r14w', 'r14b'),
+    'r14w': ('r14', 'r14d', 'r14w', 'r14b'),
+    'r14b': ('r14', 'r14d', 'r14w', 'r14b'),
+    'r15': ('r15', 'r15d', 'r15w', 'r15b'),
+    'r15d': ('r15', 'r15d', 'r15w', 'r15b'),
+    'r15w': ('r15', 'r15d', 'r15w', 'r15b'),
+    'r15b': ('r15', 'r15d', 'r15w', 'r15b'),
+}
 
 
 class RopChainGenerator(object):
@@ -150,7 +202,11 @@ class RegisterControlAnalyzer(BaseAnalysis):
             if success:
                 self.good_gadgets[gadget] = addrs
                 for i in operands:
-                    self.rop_chain_gen.register_control.add(i)
+                    # Add control to the register and all sub registers
+                    reg_fam = registers[i]
+                    regs_to_add = reg_fam[reg_fam.index(i):]
+                    for reg in regs_to_add:
+                        self.rop_chain_gen.register_control.add(reg)
 
         return self.good_gadgets
 
@@ -232,7 +288,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(WriteWhatWhereAnalyzer, self).__init__(rop_chain_gen)
 
-        self.max_depth = 4
+        self.max_depth = 10
         self.write_what_where_regex = re.compile(r"^mov.*? \[(.*)\], (.*)$")
         self.operands = None
 
@@ -247,8 +303,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
         if match:
             operands = {"to": match.group(1), "from": match.group(2)}
             # If we have the same register for writing and reading it's pointless
-            # @TODO: stuff like mov [eax], ax should be flagged as wrong and is not
-            if operands["from"] in operands["to"]:
+            if operands["from"] == operands["to"]:
                 return False, None
 
             if operands["to"] not in registers:
@@ -282,7 +337,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
         res = ""
         content = '\treturn "".join([\n'
         first = True
-        for gadget in sorted(self.good_gadgets, key=len)[:10]:
+        for gadget in sorted(self.good_gadgets, key=len):
             addrs = self.good_gadgets[gadget]
             operands = self.operands[gadget]
             content += "\t\t"
