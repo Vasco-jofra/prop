@@ -2,6 +2,7 @@ from logger import *
 import os
 import shutil
 
+
 def get_file_content(file_name):
     if os.path.isfile(file_name) == False:
         log_fatal("Unable to get the contents of the file '%s'" % file_name)
@@ -10,6 +11,7 @@ def get_file_content(file_name):
     with open(file_name, "r") as f:
         res = f.read()
     return res
+
 
 def copy_file(dst, src):
     # Sanaty checks

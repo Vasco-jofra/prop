@@ -6,16 +6,17 @@
 ##  http://shell-storm.org/project/ROPgadget/
 ##
 
-from utils.logger       import *
+from utils.logger import *
 from loaders.elf import *
-from loaders.pe  import *
+from loaders.pe import *
 from binascii import unhexlify
+
 
 class Binary(object):
     def __init__(self, filename):
-        self.__filename  = filename
+        self.__filename = filename
         self.__rawBinary = None
-        self.__binary    = None
+        self.__binary = None
 
         try:
             fd = open(self.__filename, "rb")
@@ -25,10 +26,10 @@ class Binary(object):
             log_error("Unable to open the binary '%s'" % filename)
             return None
 
-        if   self.__rawBinary[:4] == unhexlify(b"7f454c46"):
-             self.__binary = ELF(self.__rawBinary)
+        if self.__rawBinary[:4] == unhexlify(b"7f454c46"):
+            self.__binary = ELF(self.__rawBinary)
         elif self.__rawBinary[:2] == unhexlify(b"4d5a"):
-             self.__binary = PE(self.__rawBinary)
+            self.__binary = PE(self.__rawBinary)
         else:
             log_error("Binary format not supported. ELF and PE are the supported formats")
             return None
@@ -59,4 +60,3 @@ class Binary(object):
 
     def getFormat(self):
         return self.__binary.getFormat()
-

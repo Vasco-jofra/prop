@@ -37,12 +37,13 @@ registers = [ \
     "r13", "r13d", "r13w", "r13b",
     "r14", "r14d", "r14w", "r14b",
     "r15", "r15d", "r15w", "r15b",
-]
+            ]
+
 
 class RopChainGenerator(object):
     def __init__(self, prop):
-        self.gadgets   = prop.gadgets
-        self.mode      = prop.binary.getArchMode()
+        self.gadgets = prop.gadgets
+        self.mode = prop.binary.getArchMode()
         self.pack_func = "p32" if self.mode == MODE_32 else "p64"
 
         # @SEE: We will need some analysis metadata here, like registers controlled (set by the primitive analysis)
@@ -76,18 +77,19 @@ class RopChainGenerator(object):
         def gen_rop_chain():
     """
 
+
 ### ANALYSIS
 ### ANALYSIS
 ### ANALYSIS
 class BaseAnalysis(object):
     def __init__(self, rop_chain_gen):
         self.rop_chain_gen = rop_chain_gen
-        self.pack_func     = rop_chain_gen.pack_func
-        self.all_gadgets   = rop_chain_gen.gadgets
-        self.good_gadgets  = None
+        self.pack_func = rop_chain_gen.pack_func
+        self.all_gadgets = rop_chain_gen.gadgets
+        self.good_gadgets = None
 
-    def gen_func(self, name, content, args = [], defaults = []):
-        code  = ""
+    def gen_func(self, name, content, args=[], defaults=[]):
+        code = ""
         code += "def %s(" % name
         for i, arg in enumerate(args):
             code += arg
@@ -103,11 +105,12 @@ class BaseAnalysis(object):
     def gadget_comment(self, gadget, addrs):
         return " # " + str(gadget) + " --> " + str(map(lambda x: x if 'L' != x[-1] else x[:-1], map(hex, addrs)))
 
+
 class RegisterControlAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(RegisterControlAnalyzer, self).__init__(rop_chain_gen)
 
-    def __is_clean_pop(self, gadget, res = None):
+    def __is_clean_pop(self, gadget, res=None):
         if res is None:
             res = []
         if "pop " not in gadget[0]:
@@ -130,7 +133,7 @@ class RegisterControlAnalyzer(BaseAnalysis):
         if self.good_gadgets != None:
             return self.good_gadgets
 
-        self.good_gadgets  = {}
+        self.good_gadgets = {}
         for gadget, addrs in self.all_gadgets.iteritems():
             success, operands = self.__is_clean_pop(gadget)
             if success:
@@ -147,7 +150,7 @@ class RegisterControlAnalyzer(BaseAnalysis):
         res = ""
         for gadget, addrs in self.good_gadgets.iteritems():
             # Start stuff
-            content  = "\t"
+            content = "\t"
             content += 'return "".join([\n'
 
             # Address of the gadget
@@ -177,6 +180,7 @@ class RegisterControlAnalyzer(BaseAnalysis):
             res += "\n"
         return res
 
+
 class SyscallAnalyzer(BaseAnalysis):
     def __init__(self, rop_chain_gen):
         super(SyscallAnalyzer, self).__init__(rop_chain_gen)
@@ -186,7 +190,7 @@ class SyscallAnalyzer(BaseAnalysis):
         if self.good_gadgets != None:
             return self.good_gadgets
 
-        self.good_gadgets  = {}
+        self.good_gadgets = {}
         syscall_intrs = ["int 0x80", "sysenter", "syscall"]
         for k, v in self.all_gadgets.iteritems():
             if k[0] in syscall_intrs:
@@ -221,7 +225,6 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
         self.write_what_where_regex = re.compile("^mov.*? \[(.*)\], (.*)$")
         self.operands = None
 
-
     def __is_write_what_where(self, gadget):
         if len(gadget) > self.max_depth:
             return False, None
@@ -254,12 +257,12 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
             return self.good_gadgets
 
         self.good_gadgets = {}
-        self.operands     = {}
+        self.operands = {}
         for gadget, addrs in self.all_gadgets.iteritems():
             success, oper = self.__is_write_what_where(gadget)
             if success:
                 self.good_gadgets[gadget] = addrs
-                self.operands[gadget]     = oper
+                self.operands[gadget] = oper
         return self.good_gadgets
 
     def gen_python(self):
@@ -268,7 +271,7 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
         res = ""
         content = '\treturn "".join([\n'
         first = True
-        for gadget in sorted(self.good_gadgets, key = len)[:10]:
+        for gadget in sorted(self.good_gadgets, key=len)[:10]:
             addrs = self.good_gadgets[gadget]
             operands = self.operands[gadget]
             content += "\t\t"
@@ -292,4 +295,3 @@ class WriteWhatWhereAnalyzer(BaseAnalysis):
             res += self.gen_func("write_what_where", content)
 
         return res
-

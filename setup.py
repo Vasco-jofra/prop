@@ -36,4 +36,5 @@ setup(
         'console_scripts': [
             'prop=prop.prop:main',
         ],
-    })
+    },
+)

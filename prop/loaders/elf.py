@@ -10,215 +10,232 @@ from architecture import *
 from ctypes import *
 from struct import unpack
 
+
 class ELFFlags(object):
-    ELFCLASS32  = 0x01
-    ELFCLASS64  = 0x02
-    EI_CLASS    = 0x04
-    EI_DATA     = 0x05
+    ELFCLASS32 = 0x01
+    ELFCLASS64 = 0x02
+    EI_CLASS = 0x04
+    EI_DATA = 0x05
     ELFDATA2LSB = 0x01
     ELFDATA2MSB = 0x02
-    EM_386      = 0x03
-    EM_X86_64   = 0x3e
-    EM_ARM      = 0x28
-    EM_MIPS     = 0x08
+    EM_386 = 0x03
+    EM_X86_64 = 0x3e
+    EM_ARM = 0x28
+    EM_MIPS = 0x08
     EM_SPARCv8p = 0x12
-    EM_PowerPC  = 0x14
-    EM_ARM64    = 0xb7
+    EM_PowerPC = 0x14
+    EM_ARM64 = 0xb7
+
 
 class Elf32_Ehdr_LSB(LittleEndianStructure):
-    _fields_ =  [
-                    ("e_ident",         c_ubyte * 16),
-                    ("e_type",          c_ushort),
-                    ("e_machine",       c_ushort),
-                    ("e_version",       c_uint),
-                    ("e_entry",         c_uint),
-                    ("e_phoff",         c_uint),
-                    ("e_shoff",         c_uint),
-                    ("e_flags",         c_uint),
-                    ("e_ehsize",        c_ushort),
-                    ("e_phentsize",     c_ushort),
-                    ("e_phnum",         c_ushort),
-                    ("e_shentsize",     c_ushort),
-                    ("e_shnum",         c_ushort),
-                    ("e_shstrndx",      c_ushort)
-                ]
+    _fields_ = [
+        ("e_ident", c_ubyte * 16),
+        ("e_type", c_ushort),
+        ("e_machine", c_ushort),
+        ("e_version", c_uint),
+        ("e_entry", c_uint),
+        ("e_phoff", c_uint),
+        ("e_shoff", c_uint),
+        ("e_flags", c_uint),
+        ("e_ehsize", c_ushort),
+        ("e_phentsize", c_ushort),
+        ("e_phnum", c_ushort),
+        ("e_shentsize", c_ushort),
+        ("e_shnum", c_ushort),
+        ("e_shstrndx", c_ushort),
+    ]
+
 
 class Elf64_Ehdr_LSB(LittleEndianStructure):
-    _fields_ =  [
-                    ("e_ident",         c_ubyte * 16),
-                    ("e_type",          c_ushort),
-                    ("e_machine",       c_ushort),
-                    ("e_version",       c_uint),
-                    ("e_entry",         c_ulonglong),
-                    ("e_phoff",         c_ulonglong),
-                    ("e_shoff",         c_ulonglong),
-                    ("e_flags",         c_uint),
-                    ("e_ehsize",        c_ushort),
-                    ("e_phentsize",     c_ushort),
-                    ("e_phnum",         c_ushort),
-                    ("e_shentsize",     c_ushort),
-                    ("e_shnum",         c_ushort),
-                    ("e_shstrndx",      c_ushort)
-                ]
+    _fields_ = [
+        ("e_ident", c_ubyte * 16),
+        ("e_type", c_ushort),
+        ("e_machine", c_ushort),
+        ("e_version", c_uint),
+        ("e_entry", c_ulonglong),
+        ("e_phoff", c_ulonglong),
+        ("e_shoff", c_ulonglong),
+        ("e_flags", c_uint),
+        ("e_ehsize", c_ushort),
+        ("e_phentsize", c_ushort),
+        ("e_phnum", c_ushort),
+        ("e_shentsize", c_ushort),
+        ("e_shnum", c_ushort),
+        ("e_shstrndx", c_ushort),
+    ]
+
 
 class Elf32_Phdr_LSB(LittleEndianStructure):
-    _fields_ =  [
-                    ("p_type",          c_uint),
-                    ("p_offset",        c_uint),
-                    ("p_vaddr",         c_uint),
-                    ("p_paddr",         c_uint),
-                    ("p_filesz",        c_uint),
-                    ("p_memsz",         c_uint),
-                    ("p_flags",         c_uint),
-                    ("p_align",         c_uint)
-                ]
+    _fields_ = [
+        ("p_type", c_uint),
+        ("p_offset", c_uint),
+        ("p_vaddr", c_uint),
+        ("p_paddr", c_uint),
+        ("p_filesz", c_uint),
+        ("p_memsz", c_uint),
+        ("p_flags", c_uint),
+        ("p_align", c_uint),
+    ]
+
 
 class Elf64_Phdr_LSB(LittleEndianStructure):
-    _fields_ =  [
-                    ("p_type",          c_uint),
-                    ("p_flags",         c_uint),
-                    ("p_offset",        c_ulonglong),
-                    ("p_vaddr",         c_ulonglong),
-                    ("p_paddr",         c_ulonglong),
-                    ("p_filesz",        c_ulonglong),
-                    ("p_memsz",         c_ulonglong),
-                    ("p_align",         c_ulonglong)
-                ]
+    _fields_ = [
+        ("p_type", c_uint),
+        ("p_flags", c_uint),
+        ("p_offset", c_ulonglong),
+        ("p_vaddr", c_ulonglong),
+        ("p_paddr", c_ulonglong),
+        ("p_filesz", c_ulonglong),
+        ("p_memsz", c_ulonglong),
+        ("p_align", c_ulonglong),
+    ]
+
 
 class Elf32_Shdr_LSB(LittleEndianStructure):
-    _fields_ =  [
-                    ("sh_name",         c_uint),
-                    ("sh_type",         c_uint),
-                    ("sh_flags",        c_uint),
-                    ("sh_addr",         c_uint),
-                    ("sh_offset",       c_uint),
-                    ("sh_size",         c_uint),
-                    ("sh_link",         c_uint),
-                    ("sh_info",         c_uint),
-                    ("sh_addralign",    c_uint),
-                    ("sh_entsize",      c_uint)
-                ]
+    _fields_ = [
+        ("sh_name", c_uint),
+        ("sh_type", c_uint),
+        ("sh_flags", c_uint),
+        ("sh_addr", c_uint),
+        ("sh_offset", c_uint),
+        ("sh_size", c_uint),
+        ("sh_link", c_uint),
+        ("sh_info", c_uint),
+        ("sh_addralign", c_uint),
+        ("sh_entsize", c_uint),
+    ]
+
 
 class Elf64_Shdr_LSB(LittleEndianStructure):
-    _fields_ =  [
-                    ("sh_name",         c_uint),
-                    ("sh_type",         c_uint),
-                    ("sh_flags",        c_ulonglong),
-                    ("sh_addr",         c_ulonglong),
-                    ("sh_offset",       c_ulonglong),
-                    ("sh_size",         c_ulonglong),
-                    ("sh_link",         c_uint),
-                    ("sh_info",         c_uint),
-                    ("sh_addralign",    c_ulonglong),
-                    ("sh_entsize",      c_ulonglong)
-                ]
+    _fields_ = [
+        ("sh_name", c_uint),
+        ("sh_type", c_uint),
+        ("sh_flags", c_ulonglong),
+        ("sh_addr", c_ulonglong),
+        ("sh_offset", c_ulonglong),
+        ("sh_size", c_ulonglong),
+        ("sh_link", c_uint),
+        ("sh_info", c_uint),
+        ("sh_addralign", c_ulonglong),
+        ("sh_entsize", c_ulonglong),
+    ]
+
 
 class Elf32_Ehdr_MSB(BigEndianStructure):
-    _fields_ =  [
-                    ("e_ident",         c_ubyte * 16),
-                    ("e_type",          c_ushort),
-                    ("e_machine",       c_ushort),
-                    ("e_version",       c_uint),
-                    ("e_entry",         c_uint),
-                    ("e_phoff",         c_uint),
-                    ("e_shoff",         c_uint),
-                    ("e_flags",         c_uint),
-                    ("e_ehsize",        c_ushort),
-                    ("e_phentsize",     c_ushort),
-                    ("e_phnum",         c_ushort),
-                    ("e_shentsize",     c_ushort),
-                    ("e_shnum",         c_ushort),
-                    ("e_shstrndx",      c_ushort)
-                ]
+    _fields_ = [
+        ("e_ident", c_ubyte * 16),
+        ("e_type", c_ushort),
+        ("e_machine", c_ushort),
+        ("e_version", c_uint),
+        ("e_entry", c_uint),
+        ("e_phoff", c_uint),
+        ("e_shoff", c_uint),
+        ("e_flags", c_uint),
+        ("e_ehsize", c_ushort),
+        ("e_phentsize", c_ushort),
+        ("e_phnum", c_ushort),
+        ("e_shentsize", c_ushort),
+        ("e_shnum", c_ushort),
+        ("e_shstrndx", c_ushort),
+    ]
+
 
 class Elf64_Ehdr_MSB(BigEndianStructure):
-    _fields_ =  [
-                    ("e_ident",         c_ubyte * 16),
-                    ("e_type",          c_ushort),
-                    ("e_machine",       c_ushort),
-                    ("e_version",       c_uint),
-                    ("e_entry",         c_ulonglong),
-                    ("e_phoff",         c_ulonglong),
-                    ("e_shoff",         c_ulonglong),
-                    ("e_flags",         c_uint),
-                    ("e_ehsize",        c_ushort),
-                    ("e_phentsize",     c_ushort),
-                    ("e_phnum",         c_ushort),
-                    ("e_shentsize",     c_ushort),
-                    ("e_shnum",         c_ushort),
-                    ("e_shstrndx",      c_ushort)
-                ]
+    _fields_ = [
+        ("e_ident", c_ubyte * 16),
+        ("e_type", c_ushort),
+        ("e_machine", c_ushort),
+        ("e_version", c_uint),
+        ("e_entry", c_ulonglong),
+        ("e_phoff", c_ulonglong),
+        ("e_shoff", c_ulonglong),
+        ("e_flags", c_uint),
+        ("e_ehsize", c_ushort),
+        ("e_phentsize", c_ushort),
+        ("e_phnum", c_ushort),
+        ("e_shentsize", c_ushort),
+        ("e_shnum", c_ushort),
+        ("e_shstrndx", c_ushort),
+    ]
+
 
 class Elf32_Phdr_MSB(BigEndianStructure):
-    _fields_ =  [
-                    ("p_type",          c_uint),
-                    ("p_offset",        c_uint),
-                    ("p_vaddr",         c_uint),
-                    ("p_paddr",         c_uint),
-                    ("p_filesz",        c_uint),
-                    ("p_memsz",         c_uint),
-                    ("p_flags",         c_uint),
-                    ("p_align",         c_uint)
-                ]
+    _fields_ = [
+        ("p_type", c_uint),
+        ("p_offset", c_uint),
+        ("p_vaddr", c_uint),
+        ("p_paddr", c_uint),
+        ("p_filesz", c_uint),
+        ("p_memsz", c_uint),
+        ("p_flags", c_uint),
+        ("p_align", c_uint),
+    ]
+
 
 class Elf64_Phdr_MSB(BigEndianStructure):
-    _fields_ =  [
-                    ("p_type",          c_uint),
-                    ("p_flags",         c_uint),
-                    ("p_offset",        c_ulonglong),
-                    ("p_vaddr",         c_ulonglong),
-                    ("p_paddr",         c_ulonglong),
-                    ("p_filesz",        c_ulonglong),
-                    ("p_memsz",         c_ulonglong),
-                    ("p_align",         c_ulonglong)
-                ]
+    _fields_ = [
+        ("p_type", c_uint),
+        ("p_flags", c_uint),
+        ("p_offset", c_ulonglong),
+        ("p_vaddr", c_ulonglong),
+        ("p_paddr", c_ulonglong),
+        ("p_filesz", c_ulonglong),
+        ("p_memsz", c_ulonglong),
+        ("p_align", c_ulonglong),
+    ]
+
 
 class Elf32_Shdr_MSB(BigEndianStructure):
-    _fields_ =  [
-                    ("sh_name",         c_uint),
-                    ("sh_type",         c_uint),
-                    ("sh_flags",        c_uint),
-                    ("sh_addr",         c_uint),
-                    ("sh_offset",       c_uint),
-                    ("sh_size",         c_uint),
-                    ("sh_link",         c_uint),
-                    ("sh_info",         c_uint),
-                    ("sh_addralign",    c_uint),
-                    ("sh_entsize",      c_uint)
-                ]
+    _fields_ = [
+        ("sh_name", c_uint),
+        ("sh_type", c_uint),
+        ("sh_flags", c_uint),
+        ("sh_addr", c_uint),
+        ("sh_offset", c_uint),
+        ("sh_size", c_uint),
+        ("sh_link", c_uint),
+        ("sh_info", c_uint),
+        ("sh_addralign", c_uint),
+        ("sh_entsize", c_uint),
+    ]
+
 
 class Elf64_Shdr_MSB(BigEndianStructure):
-    _fields_ =  [
-                    ("sh_name",         c_uint),
-                    ("sh_type",         c_uint),
-                    ("sh_flags",        c_ulonglong),
-                    ("sh_addr",         c_ulonglong),
-                    ("sh_offset",       c_ulonglong),
-                    ("sh_size",         c_ulonglong),
-                    ("sh_link",         c_uint),
-                    ("sh_info",         c_uint),
-                    ("sh_addralign",    c_ulonglong),
-                    ("sh_entsize",      c_ulonglong)
-                ]
+    _fields_ = [
+        ("sh_name", c_uint),
+        ("sh_type", c_uint),
+        ("sh_flags", c_ulonglong),
+        ("sh_addr", c_ulonglong),
+        ("sh_offset", c_ulonglong),
+        ("sh_size", c_ulonglong),
+        ("sh_link", c_uint),
+        ("sh_info", c_uint),
+        ("sh_addralign", c_ulonglong),
+        ("sh_entsize", c_ulonglong),
+    ]
+
 
 """ This class parses the ELF """
+
+
 class ELF(object):
     def __init__(self, binary):
-        self.__binary    = bytearray(binary)
+        self.__binary = bytearray(binary)
         self.__ElfHeader = None
-        self.__shdr_l    = []
-        self.__phdr_l    = []
+        self.__shdr_l = []
+        self.__phdr_l = []
 
         self.__setHeaderElf()
         self.__setShdr()
         self.__setPhdr()
 
     """ Parse ELF header """
+
     def __setHeaderElf(self):
         e_ident = self.__binary[:15]
 
         ei_class = e_ident[ELFFlags.EI_CLASS]
-        ei_data  = e_ident[ELFFlags.EI_DATA]
+        ei_data = e_ident[ELFFlags.EI_DATA]
 
         if ei_class != ELFFlags.ELFCLASS32 and ei_class != ELFFlags.ELFCLASS64:
             print("[Error] ELF.__setHeaderElf() - Bad Arch size")
@@ -229,15 +246,16 @@ class ELF(object):
             return None
 
         if ei_class == ELFFlags.ELFCLASS32:
-            if   ei_data == ELFFlags.ELFDATA2LSB: self.__ElfHeader = Elf32_Ehdr_LSB.from_buffer_copy(self.__binary)
+            if ei_data == ELFFlags.ELFDATA2LSB: self.__ElfHeader = Elf32_Ehdr_LSB.from_buffer_copy(self.__binary)
             elif ei_data == ELFFlags.ELFDATA2MSB: self.__ElfHeader = Elf32_Ehdr_MSB.from_buffer_copy(self.__binary)
         elif ei_class == ELFFlags.ELFCLASS64:
-            if   ei_data == ELFFlags.ELFDATA2LSB: self.__ElfHeader = Elf64_Ehdr_LSB.from_buffer_copy(self.__binary)
+            if ei_data == ELFFlags.ELFDATA2LSB: self.__ElfHeader = Elf64_Ehdr_LSB.from_buffer_copy(self.__binary)
             elif ei_data == ELFFlags.ELFDATA2MSB: self.__ElfHeader = Elf64_Ehdr_MSB.from_buffer_copy(self.__binary)
 
-        self.getArch() # Check if architecture is supported
+        self.getArch()  # Check if architecture is supported
 
     """ Parse Section header """
+
     def __setShdr(self):
         shdr_num = self.__ElfHeader.e_shnum
         base = self.__binary[self.__ElfHeader.e_shoff:]
@@ -249,10 +267,10 @@ class ELF(object):
         for i in range(shdr_num):
 
             if self.getArchMode() == MODE_32:
-                if   ei_data == ELFFlags.ELFDATA2LSB: shdr = Elf32_Shdr_LSB.from_buffer_copy(base)
+                if ei_data == ELFFlags.ELFDATA2LSB: shdr = Elf32_Shdr_LSB.from_buffer_copy(base)
                 elif ei_data == ELFFlags.ELFDATA2MSB: shdr = Elf32_Shdr_MSB.from_buffer_copy(base)
             elif self.getArchMode() == MODE_64:
-                if   ei_data == ELFFlags.ELFDATA2LSB: shdr = Elf64_Shdr_LSB.from_buffer_copy(base)
+                if ei_data == ELFFlags.ELFDATA2LSB: shdr = Elf64_Shdr_LSB.from_buffer_copy(base)
                 elif ei_data == ELFFlags.ELFDATA2MSB: shdr = Elf64_Shdr_MSB.from_buffer_copy(base)
 
             self.__shdr_l.append(shdr)
@@ -265,6 +283,7 @@ class ELF(object):
                 self.__shdr_l[i].str_name = string_table[self.__shdr_l[i].sh_name:].split('\0')[0]
 
     """ Parse Program header """
+
     def __setPhdr(self):
         pdhr_num = self.__ElfHeader.e_phnum
         base = self.__binary[self.__ElfHeader.e_phoff:]
@@ -275,10 +294,10 @@ class ELF(object):
 
         for i in range(pdhr_num):
             if self.getArchMode() == MODE_32:
-                if   ei_data == ELFFlags.ELFDATA2LSB: phdr = Elf32_Phdr_LSB.from_buffer_copy(base)
+                if ei_data == ELFFlags.ELFDATA2LSB: phdr = Elf32_Phdr_LSB.from_buffer_copy(base)
                 elif ei_data == ELFFlags.ELFDATA2MSB: phdr = Elf32_Phdr_MSB.from_buffer_copy(base)
             elif self.getArchMode() == MODE_64:
-                if   ei_data == ELFFlags.ELFDATA2LSB: phdr = Elf64_Phdr_LSB.from_buffer_copy(base)
+                if ei_data == ELFFlags.ELFDATA2LSB: phdr = Elf64_Phdr_LSB.from_buffer_copy(base)
                 elif ei_data == ELFFlags.ELFDATA2MSB: phdr = Elf64_Phdr_MSB.from_buffer_copy(base)
 
             self.__phdr_l.append(phdr)
@@ -291,25 +310,29 @@ class ELF(object):
         ret = []
         for segment in self.__phdr_l:
             if segment.p_flags & 0x1:
-                ret +=  [{
-                            "offset"  : segment.p_offset,
-                            "size"    : segment.p_memsz,
-                            "vaddr"   : segment.p_vaddr,
-                            "opcodes" : bytes(self.__binary[segment.p_offset:segment.p_offset+segment.p_memsz])
-                        }]
+                ret += [
+                    {
+                        "offset": segment.p_offset,
+                        "size": segment.p_memsz,
+                        "vaddr": segment.p_vaddr,
+                        "opcodes": bytes(self.__binary[segment.p_offset:segment.p_offset + segment.p_memsz])
+                    }
+                ]
         return ret
 
     def getDataSections(self):
         ret = []
         for section in self.__shdr_l:
             if not (section.sh_flags & 0x4) and (section.sh_flags & 0x2):
-                ret +=  [{
-                            "name"    : section.str_name,
-                            "offset"  : section.sh_offset,
-                            "size"    : section.sh_size,
-                            "vaddr"   : section.sh_addr,
-                            "opcodes" : str(self.__binary[section.sh_offset:section.sh_offset+section.sh_size])
-                        }]
+                ret += [
+                    {
+                        "name": section.str_name,
+                        "offset": section.sh_offset,
+                        "size": section.sh_size,
+                        "vaddr": section.sh_addr,
+                        "opcodes": str(self.__binary[section.sh_offset:section.sh_offset + section.sh_size])
+                    }
+                ]
         return ret
 
     def getArch(self):
@@ -340,4 +363,3 @@ class ELF(object):
 
     def getFormat(self):
         return "ELF"
-
