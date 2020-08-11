@@ -11,9 +11,10 @@ import sys
 import time
 import distorm3
 
+
 class Prop(object):
-    def __init__(self, binpath, depth=10):
-        self.ends      = ["ret", "retf", "int ", "sysenter", "syscall", "call e", "call r"] # "jmp", "call"]
+    def __init__(self, binpath, depth):
+        self.ends = ["ret", "retf", "int ", "sysenter", "syscall", "call e", "call r"]  # "jmp", "call"]
         self.blacklist = ["db", "int 3"]
 
         self.binary = Binary(binpath)
@@ -26,7 +27,7 @@ class Prop(object):
         disasm = distorm3.Decode(pc, data, mode)
 
         instr_list = []
-        addr_list  = []
+        addr_list = []
         for d in disasm:
             addr = d[0]
             size = d[1]
@@ -50,7 +51,6 @@ class Prop(object):
         # Did not find an end
         return None, None
 
-
     def extract_gadgets(self, depth):
         """ Extracts all the gadgets that exist in the file given, and returns them in a set """
 
@@ -64,20 +64,20 @@ class Prop(object):
 
         for section in self.binary.getExecSections():
             opcodes = section['opcodes']
-            vaddr   = section['vaddr']
-            size    = section['size']
-            offset  = section['offset']
+            vaddr = section['vaddr']
+            size = section['size']
+            offset = section['offset']
 
-            log_info("Extracting gadgets from the executable section 0x%x-0x%x" % (vaddr, vaddr+size))
+            log_info("Extracting gadgets from the executable section 0x%x-0x%x" % (vaddr, vaddr + size))
 
-            start_time   = time.time()
+            start_time = time.time()
             tested_addrs = set()
 
             # @Performance: thread this
             skipped = 0
             for i in range(size):
-                src_addr = vaddr+i
-                src_data = opcodes[i:i+depth]
+                src_addr = vaddr + i
+                src_data = opcodes[i:i + depth]
 
                 # Check to see if we need to extract gadgets for this address
                 if src_addr not in tested_addrs:
@@ -100,8 +100,8 @@ class Prop(object):
                         else:
                             self.gadgets[val] = [a]
 
-            log_info("Found %d unique gadgets in %0.2f seconds at depth %d." % (len(self.gadgets), time.time()-start_time, depth))
-            log_info("Skipped %d" % skipped) # @Cleanup: remove me
+            log_info("Found %d unique gadgets in %0.2f seconds at depth %d." % (len(self.gadgets), time.time() - start_time, depth))
+            log_info("Skipped %d" % skipped)  # @Cleanup: remove me
 
         return self.gadgets
 
@@ -128,21 +128,24 @@ def exit_with_msg(msg):
     print "[ERROR] %s" % msg
     exit(-1)
 
+
 # =============
 # MAIN
 # =============
 def main():
-    parser = argparse.ArgumentParser(description = 'Props to the boys.')
+    DEPTH_DEFAULT = 10
+
+    parser = argparse.ArgumentParser(description='Props to the boys.')
     parser.add_argument('binary_path', help='The binary path of the file to be analyzed')
-    parser.add_argument('-d', '--depth', help='Gadget search depth', type=int, default = 10)
+    parser.add_argument('-d', '--depth', help='Gadget search depth (default=%d)' % (DEPTH_DEFAULT), type=int, default=DEPTH_DEFAULT)
     parser.add_argument('-t', '--text_gadgets', action="store_true", help='output gadgets in text format (default)')
+    parser.add_argument('-c', '--code', action="store_true", help='output interesting gadgets found as python functions')
     parser.add_argument('-p', '--python_gadgets', action="store_true", help='output gadgets as a python dictionary')
     parser.add_argument('-s', '--silent', action="store_true", help='no gadgets output, just some info')
-    parser.add_argument('-c', '--code', action="store_true", help='output interesting gadgets found as python functions')
 
     args = parser.parse_args()
 
-    prop    = Prop(args.binary_path, depth=args.depth)
+    prop = Prop(args.binary_path, depth=args.depth)
     rop_gen = RopChainGenerator(prop)
 
     if args.code == True:
